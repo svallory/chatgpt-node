@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>ChatGPT Proxy</h1>
+
+  <script type="text/javascript">
+    window.testWS = function () {
+      const $ = document.getElementById.bind(document);
+      const host = $('hostname').value;
+
+      try {
+        const ws = new WebSocket(`wss://${host}`)
+        ws.onopen = function (evt) {
+          $('result').innerText += 'Connected!\n\n'
+
+          $('result').innerText += `Sending: "Hello!"\n\n`
+          ws.send('Hello!')
+        }
+
+        ws.onmessage = function (evt, ...args) {
+          $('result').innerText += `Message received: ${JSON.stringify({ event: evt.data, ...args }, null, 2)}\n\n`
+        }
+
+        ws.onerror = function (evt) {
+          $('result').innerText += `ERROR: ${JSON.stringify(evt, null, 2)}\n\n`
+        }
+
+        window.ws = ws;
+      }
+      catch (e) {
+        $('result').innerText = e.message || JSON.stringify(e, null, 2)
+      }
+    }
+  </script>
+  <input id="hostname" type="text" value="wss://fp-async-webps-staging.webpubsub.azure.com" />
+  <button onclick="testWS()">Test the WebSocket</button>
+  <h2>Result</h2>
+  <pre id="result"></pre>
+</body>
+
+</html>
